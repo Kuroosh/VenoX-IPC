@@ -1,0 +1,6 @@
+docker_node_modules/*
+docker_fonts/*
+node_modules/*
+assets/*
+cache/*
+build/*

@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "experimentalDecorators": true,
+    "allowJs": true,
+    "checkJs": true,
+    "outDir": "build",
+    "strict": false,
+    "strictNullChecks": true,
+    "skipLibCheck": true,
+    "noImplicitThis": true,
+    "esModuleInterop": true,
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "emitDecoratorMetadata": true,
+    "declaration": true,
+    "lib": ["ESNext", "esnext.array"]
+  },
+  "include": ["./src/**/*.ts"],
+  "exclude": ["node_modules", "src/Tests/*", "src/Binary/GenerateStatics.ts"]
+}

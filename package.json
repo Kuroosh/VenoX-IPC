@@ -1,0 +1,22 @@
+{
+  "name": "VenoxIpc",
+  "version": "1.0.0",
+  "description": "VenoX Bot is a multipurpose Whatsapp bot.",
+  "main": "",
+  "type": "module",
+  "esModuleInterop": true,
+  "allowSyntheticDefaultImports": true,
+  "scripts": {
+    "start": "tsc && node ./build/index.js",
+    "dockerinit": "npm i && tsc && node ./build/index.js",
+    "dockerstart": "tsc && node ./build/index.js"
+  },
+  "author": "Solid_Snake aka Kuroosh",
+  "license": "MIT",
+  "dependencies": {
+    "node-ipc": "^10.1.0"
+  },
+  "devDependencies": {
+    "@types/node-ipc": "^9.2.0"
+  }
+}
