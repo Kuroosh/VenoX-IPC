@@ -4,7 +4,7 @@
 ////www.venox-international.com////////
 //----------------------------------//
 import * as mysql from 'mysql';
-import { _animals, _bannedNumbers, _groups, _JoinRequests, _shopAnimals, _userItems, _verifiedUser, color } from '../globals/constants.js';
+import { _animals, _bannedNumbers, _groups, _JoinRequests, _sessionIds, _shopAnimals, _userItems, _verifiedUser, color } from '../globals/constants.js';
 import chalk from 'chalk';
 import config from '../config.js';
 import { _challenges, _sessions } from '../fun/constants.js';
@@ -52,6 +52,19 @@ function createDatabaseConnection() {
 	} catch (ex) {
 		console.log(ex);
 	}
+}
+
+function LoadSessionIds(connection: mysql.PoolConnection) {
+	return new Promise((resolve, reject) => {
+		const sqlString = 'SELECT * FROM `sessions`';
+		connection.query(sqlString, (err, tables) => {
+			if (err) console.log(err);
+			for (const entry of tables) _sessionIds[Number(entry.id)] = entry;
+
+			console.log(color('[DATABASE]', chalk.whiteBright), color(`${tables.length} Bot-Session's has been loaded.`, chalk.redBright));
+			return resolve(true);
+		});
+	});
 }
 
 async function loadDatabaseItems(connection: mysql.PoolConnection): Promise<Boolean> {
@@ -218,6 +231,7 @@ export async function loadDatabaseTables(): Promise<Boolean> {
 		if (!mySQLConnection) createDatabaseConnection();
 		return new Promise((resolve, reject) => {
 			mySQLConnection.getConnection(async function (err, connection) {
+				await LoadSessionIds(connection);
 				await loadDatabaseBans(connection);
 				await loadDatabaseGroups(connection);
 				await loadDatabaseJoinRequests(connection);

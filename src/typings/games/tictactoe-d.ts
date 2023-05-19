@@ -11,6 +11,6 @@ export default interface TicTacToeSession {
 	reward: number;
 	creator_val: number[];
 	enemy_val: number[];
-	created: number;
-	accepted: boolean;
+	date: number;
+	creator_turn: boolean;
 }

@@ -5,6 +5,8 @@ import * as constants from './globals/constants.js';
 import config from './config.js';
 import { _challenges, _sessions } from './fun/constants.js';
 import { syncGameHandler } from './fun/games/sync.js';
+import SessionModel from './typings/session-model.js';
+import { syncRegistrationAPI } from './registration/index.js';
 
 ipc.config.id = 'venoxipc';
 ipc.config.networkHost = '127.0.0.1';
@@ -16,6 +18,7 @@ ipc.config.silent = true;
 ipc.serve(async () => {
 	await loadDatabaseTables();
 	syncGameHandler();
+	syncRegistrationAPI();
 	console.log('Starting VenoX-IPC Server');
 	ipc.server.on('connect', () => {
 		//ipc.server.broadcast('message', 'yoyooyoyoy');
@@ -25,6 +28,7 @@ ipc.serve(async () => {
 		const user = constants._verifiedUser[data.id];
 		if (!user || user[data.prop] == data.value) return;
 		user[data.prop] = data.value;
+		console.log('received user:update');
 		return ipc.server.broadcast('user:update', data);
 	});
 
@@ -70,10 +74,6 @@ ipc.serve(async () => {
 
 ipc.server.start();
 
-const sessions = [
-	'VenoX - Bot - 650 - 705',
-	//'VenoX - Bot - 650 - 513',
-];
 function pm2Connect() {
 	pm2.connect((err) => {
 		if (err) {
@@ -81,14 +81,15 @@ function pm2Connect() {
 			process.exit(2);
 		}
 
-		sessions.forEach((session) => {
+		Object.values(constants._sessionIds).forEach((session) => {
 			pm2.start(
 				{
-					name: session,
+					name: session.alias,
 					script: config.globalPath + 'build\\ipc.js',
 					args: ['--color'],
 					env: {
-						SESSION_ID: session,
+						SESSION_ID: session.id + '',
+						SESSION_ALIAS: session.alias,
 					},
 				},
 				(err, apps) => {

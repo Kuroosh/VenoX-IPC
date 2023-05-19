@@ -12,6 +12,9 @@ import VenoxUser from '../typings/user/venox-user';
 import ShopAnimal from '../fun/animals/typings/shop-d';
 import Animal from '../fun/animals/typings/animal-d';
 import Item from '../typings/user/venox-inventory';
+import SessionModel from '../typings/session-model';
+
+export const _sessionIds: { [index: number]: SessionModel } = {};
 
 export const _userItems: { [index: number]: Item } = {};
 
