@@ -43,6 +43,7 @@ export function syncRegistrationAPI() {
 		return ipc.server.broadcast('registrationApi:onOTPResult', data);
 	});
 	ipc.server.on('registrationApi:invokeOTP', (data, socket) => {
+		console.log('got OTP With data - sending to client Result: ' + JSON.stringify(data));
 		return ipc.server.broadcast('registrationApi:addOTP', data);
 	});
 }

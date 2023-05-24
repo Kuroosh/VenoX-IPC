@@ -13,6 +13,26 @@ function sendUpdateToMaster(id: any, prop: any, value: any) {
 export default class VenoxUser {
 	id: number = -1;
 
+	private _email: string = '';
+	public get email(): string {
+		return this._email;
+	}
+	public set email(value: string) {
+		if (this._email == value) return;
+		sendUpdateToMaster(this.id, 'email', value);
+		this._email = value;
+	}
+
+	private _password: string = '';
+	public get password(): string {
+		return this._password;
+	}
+	public set password(value: string) {
+		if (this._email == value) return;
+		sendUpdateToMaster(this.id, 'password', value);
+		this._password = value;
+	}
+
 	private _money: number = 0;
 	public get money(): number {
 		return this._money;
