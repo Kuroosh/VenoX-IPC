@@ -5,9 +5,8 @@ import * as constants from './globals/constants.js';
 import config from './config.js';
 import { _challenges, _sessions } from './fun/constants.js';
 import { syncGameHandler } from './fun/games/sync.js';
-import SessionModel from './typings/session-model.js';
 import { syncRegistrationAPI } from './registration/index.js';
-
+import { syncAnimalIpcHandler } from './fun/animals/sync/index.js';
 ipc.config.id = 'venoxipc';
 ipc.config.networkHost = '127.0.0.1';
 ipc.config.networkPort = 8000;
@@ -19,6 +18,8 @@ ipc.serve(async () => {
 	await loadDatabaseTables();
 	syncGameHandler();
 	syncRegistrationAPI();
+	syncAnimalIpcHandler();
+
 	console.log('Starting VenoX-IPC Server');
 	ipc.server.on('connect', () => {
 		//ipc.server.broadcast('message', 'yoyooyoyoy');
