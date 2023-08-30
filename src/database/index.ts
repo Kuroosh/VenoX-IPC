@@ -21,12 +21,23 @@ export const mySQLConnectionPoolConfig = {
 	queueLimit: 500,
 };
 */
-
+/*
 export const mySQLConnectionPoolConfig = {
 	connectionLimit: 10,
 	host: '127.0.0.1',
 	user: 'whatsappbot',
 	password: '7G!PLGo/mXaUF.Y9UvecYJOBK!)2rU.Q',
+	database: 'whatsappbot',
+	charset: 'utf8mb4_bin',
+	waitForConnections: true,
+	queueLimit: 500,
+};
+*/
+export const mySQLConnectionPoolConfig = {
+	connectionLimit: 10,
+	host: '127.0.0.1',
+	user: 'root',
+	password: '',
 	database: 'whatsappbot',
 	charset: 'utf8mb4_bin',
 	waitForConnections: true,

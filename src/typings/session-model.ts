@@ -7,4 +7,5 @@
 export default interface SessionModel {
 	id: number;
 	alias: string;
+	active: boolean;
 }

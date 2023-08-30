@@ -82,26 +82,28 @@ function pm2Connect() {
 			process.exit(2);
 		}
 
-		Object.values(constants._sessionIds).forEach((session) => {
-			pm2.start(
-				{
-					name: session.alias,
-					script: config.globalPath + 'build\\ipc.js',
-					args: ['--color'],
-					env: {
-						SESSION_ID: session.id + '',
-						SESSION_ALIAS: session.alias,
+		Object.values(constants._sessionIds)
+			.filter((x) => x.active)
+			.forEach((session) => {
+				pm2.start(
+					{
+						name: session.alias,
+						script: config.globalPath + 'build\\ipc.js',
+						args: ['--color'],
+						env: {
+							SESSION_ID: session.id + '',
+							SESSION_ALIAS: session.alias,
+						},
 					},
-				},
-				(err, apps) => {
-					//pm2.disconnect();
-					if (err) {
-						console.error(err);
-						process.exit(2);
+					(err, apps) => {
+						//pm2.disconnect();
+						if (err) {
+							console.error(err);
+							process.exit(2);
+						}
 					}
-				}
-			);
-		});
+				);
+			});
 	});
 }
 
