@@ -6,7 +6,7 @@
 
 //----------------------------------//
 export interface GroupData {
-    id: string;
+    id: number;
     name: string;
     link: link;
     allowedCountryCodes: number[];

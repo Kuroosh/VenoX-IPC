@@ -23,6 +23,16 @@ export default class VenoxUser {
 		this._email = value;
 	}
 
+	private _username: string = '';
+	public get username(): string {
+		return this._username;
+	}
+	public set username(value: string) {
+		if (this._username == value) return;
+		sendUpdateToMaster(this.id, 'username', value);
+		this._username = value;
+	}
+
 	private _password: string = '';
 	public get password(): string {
 		return this._password;
@@ -42,6 +52,29 @@ export default class VenoxUser {
 		sendUpdateToMaster(this.id, 'money', value);
 		this._money = value;
 	}
+
+
+	private _moneyLimit: number = 0;
+	public get moneyLimit(): number {
+		return this._moneyLimit;
+	}
+	public set moneyLimit(value: number) {
+		if (this._moneyLimit == value) return;
+		sendUpdateToMaster(this.id, 'moneyLimit', value);
+		this._moneyLimit = value;
+	}
+
+	private _moneyLimitDate: number = 0;
+	public get moneyLimitDate(): number {
+		return this._moneyLimitDate;
+	}
+	public set moneyLimitDate(value: number) {
+		if (this._moneyLimitDate == value) return;
+		sendUpdateToMaster(this.id, 'moneyLimitDate', value);
+		this._moneyLimitDate = value;
+	}
+
+
 
 	private _formattedName: string = '';
 	public get formattedName(): string {
@@ -63,11 +96,11 @@ export default class VenoxUser {
 		this._socialState = value;
 	}
 
-	private _groupId: string = '';
-	public get groupId(): string {
+	private _groupId: number = -1;
+	public get groupId(): number {
 		return this._groupId;
 	}
-	public set groupId(value: string) {
+	public set groupId(value: number) {
 		if (this._groupId == value) return;
 		sendUpdateToMaster(this.id, 'groupId', value);
 		this._groupId = value;
@@ -76,6 +109,7 @@ export default class VenoxUser {
 	/* Security */
 	lastMessage: Date;
 	warnLevel: number = 0;
+	slotActive: boolean = false;
 
 	private _creation_date: number = 0;
 	public get creation_date(): number {

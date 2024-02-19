@@ -13,10 +13,13 @@ import ShopAnimal from '../fun/animals/typings/shop-d';
 import Animal from '../fun/animals/typings/animal-d';
 import Item from '../typings/user/venox-inventory';
 import SessionModel from '../typings/session-model';
+import SlotJackpot from '../typings/slot-jackpot';
 
 export const _sessionIds: { [index: number]: SessionModel } = {};
 
 export const _userItems: { [index: number]: Item } = {};
+
+export const _slotJackpots: { [index: number]: SlotJackpot } = {};
 
 export const _bannedNumbers: { [index: number]: BannedUser } = {};
 

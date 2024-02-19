@@ -5,7 +5,6 @@ import * as constants from './globals/constants.js';
 import config from './config.js';
 import { _challenges, _sessions } from './fun/constants.js';
 import { syncGameHandler } from './fun/games/sync.js';
-import { syncRegistrationAPI } from './registration/index.js';
 import { syncAnimalIpcHandler } from './fun/animals/sync/index.js';
 ipc.config.id = 'venoxipc';
 ipc.config.networkHost = '127.0.0.1';
@@ -13,16 +12,31 @@ ipc.config.networkPort = 8000;
 
 // Deaktivieren Sie das Logging
 ipc.config.silent = true;
+const connectedSockets = new Set<any>();
+
+function broadcastToOther(socket: any, event: string, data: any)
+{	console.log('Emitting to other nahui');
+	connectedSockets.forEach((otherSocket) => {
+        if (otherSocket !== socket) {
+            ipc.server.emit(otherSocket, event, data);
+        }
+    });
+}
 
 ipc.serve(async () => {
 	await loadDatabaseTables();
 	syncGameHandler();
-	syncRegistrationAPI();
 	syncAnimalIpcHandler();
 
 	console.log('Starting VenoX-IPC Server');
-	ipc.server.on('connect', () => {
+	ipc.server.on('connect', (socket) => {
 		//ipc.server.broadcast('message', 'yoyooyoyoy');
+		connectedSockets.add(socket);
+	});
+
+	ipc.server.on('disconnect', (socket) => {
+		console.log('Client disconnected:', socket.id);
+		connectedSockets.delete(socket);
 	});
 
 	ipc.server.on('user:update', (data, socket) => {
@@ -30,15 +44,19 @@ ipc.serve(async () => {
 		if (!user || user[data.prop] == data.value) return;
 		user[data.prop] = data.value;
 		console.log('received user:update');
-		return ipc.server.broadcast('user:update', data);
+		return broadcastToOther(socket, 'user:update', data);
+		//return ipc.server.broadcast('user:update', data);
+		//return ipc.server.broadcast('user:update', data);
 	});
 
 	ipc.server.on('ban:removeFromGroups', (data, socket) => {
-		return ipc.server.broadcast('ban:removeFromGroups', data);
+		//return ipc.server.broadcast('ban:removeFromGroups', data);
+		return broadcastToOther(socket, 'ban:removeFromGroups', data);
 	});
 
 	ipc.server.on('ban:delete', (data, socket) => {
-		return ipc.server.broadcast('ban:delete', data);
+		//return ipc.server.broadcast('ban:delete', data);
+		return broadcastToOther(socket, 'ban:delete', data);
 	});
 
 	ipc.server.on('message', (data, socket) => {
@@ -57,6 +75,7 @@ ipc.serve(async () => {
 		ipc.server.emit(socket, 'database:loadInventoryItems', { items: constants._userItems });
 		ipc.server.emit(socket, 'database:loadGameChallenges', { challenges: _challenges });
 		ipc.server.emit(socket, 'database:loadTicTacToeSessions', { sessions: _sessions });
+		ipc.server.emit(socket, 'database:loadSlotJackpot', { jackpot: constants._slotJackpots });
 		ipc.server.emit(socket, 'client:startProcess', true);
 		/*ipc.server.emit(socket, 'database:loadTables', {
 			user: constants._verifiedUser,
@@ -85,20 +104,25 @@ function pm2Connect() {
 		Object.values(constants._sessionIds)
 			.filter((x) => x.active)
 			.forEach((session) => {
+				console.log('started session : ' + session.id + ' | ' + session.alias);
 				pm2.start(
 					{
 						name: session.alias,
 						script: config.globalPath + 'build\\ipc.js',
 						args: ['--color'],
+						//watch: false,
 						env: {
 							SESSION_ID: session.id + '',
 							SESSION_ALIAS: session.alias,
 						},
 					},
 					(err, apps) => {
+						console.log('Application started:', session.alias);
+						pm2.disconnect(); // Disconnect PM2 after starting the application
 						//pm2.disconnect();
 						if (err) {
-							console.error(err);
+							console.error('Failed to start application:', session.alias, err);
+							//console.error(err);
 							process.exit(2);
 						}
 					}

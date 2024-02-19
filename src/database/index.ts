@@ -4,7 +4,7 @@
 ////www.venox-international.com////////
 //----------------------------------//
 import * as mysql from 'mysql';
-import { _animals, _bannedNumbers, _groups, _JoinRequests, _sessionIds, _shopAnimals, _userItems, _verifiedUser, color } from '../globals/constants.js';
+import { _animals, _bannedNumbers, _groups, _JoinRequests, _sessionIds, _shopAnimals, _slotJackpots, _userItems, _verifiedUser, color } from '../globals/constants.js';
 import chalk from 'chalk';
 import config from '../config.js';
 import { _challenges, _sessions } from '../fun/constants.js';
@@ -38,7 +38,7 @@ export const mySQLConnectionPoolConfig = {
 	host: '127.0.0.1',
 	user: 'root',
 	password: '',
-	database: 'whatsappbot',
+	database: 'telegrambot',
 	charset: 'utf8mb4_bin',
 	waitForConnections: true,
 	queueLimit: 500,
@@ -87,6 +87,21 @@ async function loadDatabaseItems(connection: mysql.PoolConnection): Promise<Bool
 				_userItems[Number(entry.id)] = entry;
 			}
 			console.log(color('[DATABASE]', chalk.whiteBright), color(`${tables.length} inventory-informations has been loaded.`, chalk.cyanBright));
+			//banWorker.postMessage({ key: eventNames.BanList, value: _bannedNumbers });
+			return resolve(true);
+		});
+	});
+}
+
+async function loadDatabaseJackpots(connection: mysql.PoolConnection): Promise<Boolean> {
+	return new Promise((resolve, reject) => {
+		connection.query('SELECT * FROM `slot_jackpot`', (err, tables) => {
+			if (err) console.log(err);
+			for (const entry of tables) {
+				if (_slotJackpots[entry.id]) continue;
+				_slotJackpots[Number(entry.id)] = entry;
+			}
+			console.log(color('[DATABASE]', chalk.whiteBright), color(`${tables.length} Slot-Jackpot-informations has been loaded.`, chalk.magentaBright));
 			//banWorker.postMessage({ key: eventNames.BanList, value: _bannedNumbers });
 			return resolve(true);
 		});
@@ -251,6 +266,7 @@ export async function loadDatabaseTables(): Promise<Boolean> {
 				await loadDatabaseItems(connection);
 				await LoadGameChallenges(connection);
 				await LoadDatabaseTicTacToeSessions(connection);
+				await loadDatabaseJackpots(connection);
 				connection.release();
 				return resolve(true);
 			});
