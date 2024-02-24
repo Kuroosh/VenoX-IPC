@@ -66,7 +66,7 @@ function createDatabaseConnection() {
 }
 
 function LoadSessionIds(connection: mysql.PoolConnection) {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		const sqlString = 'SELECT * FROM `sessions`';
 		connection.query(sqlString, (err, tables) => {
 			if (err) console.log(err);
@@ -79,7 +79,7 @@ function LoadSessionIds(connection: mysql.PoolConnection) {
 }
 
 async function loadDatabaseItems(connection: mysql.PoolConnection): Promise<Boolean> {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		connection.query('SELECT * FROM `inventory`', (err, tables) => {
 			if (err) console.log(err);
 			for (const entry of tables) {
@@ -94,7 +94,7 @@ async function loadDatabaseItems(connection: mysql.PoolConnection): Promise<Bool
 }
 
 async function loadDatabaseJackpots(connection: mysql.PoolConnection): Promise<Boolean> {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		connection.query('SELECT * FROM `slot_jackpot`', (err, tables) => {
 			if (err) console.log(err);
 			for (const entry of tables) {
@@ -109,7 +109,7 @@ async function loadDatabaseJackpots(connection: mysql.PoolConnection): Promise<B
 }
 
 async function LoadDatabaseTicTacToeSessions(connection: mysql.PoolConnection): Promise<Boolean> {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		connection.query('SELECT * FROM `tictactoe`', (err, tables) => {
 			if (err) console.log(err);
 			for (const entry of tables) {
@@ -123,7 +123,7 @@ async function LoadDatabaseTicTacToeSessions(connection: mysql.PoolConnection): 
 	});
 }
 async function loadDatabaseBans(connection: mysql.PoolConnection): Promise<Boolean> {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		connection.query('SELECT * FROM `ban`', (err, tables) => {
 			if (err) console.log(err);
 			for (const entry of tables) {
@@ -138,15 +138,15 @@ async function loadDatabaseBans(connection: mysql.PoolConnection): Promise<Boole
 }
 
 async function loadDatabaseGroups(connection: mysql.PoolConnection): Promise<Boolean> {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		connection.query('SELECT * FROM `groups`', (err, tables) => {
 			if (err) console.log(err);
 			for (const entry of tables) {
-				if (_groups[entry.id]) continue;
+				if (_groups[Number(entry.id)]) continue;
 				entry.allowedCountryCodes = JSON.parse(entry.allowedCountryCodes);
 				entry.groupOwner = JSON.parse(entry.groupOwner);
 				entry.groupAdmins = JSON.parse(entry.groupAdmins);
-				_groups[entry.id] = entry;
+				_groups[Number(entry.id)] = entry;
 			}
 			console.log(color('[DATABASE]', chalk.magenta), color(`${tables.length} group-informations has been loaded.`, chalk.red));
 			return resolve(true);
@@ -185,7 +185,7 @@ function updateUserVipPackage(user: any) {
 }
 
 async function loadDatabaseUser(connection: mysql.PoolConnection): Promise<Boolean> {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		const sqlString = config.isDebug ? 'SELECT * FROM `user` WHERE adminLevel > 0' : 'SELECT * FROM `user`';
 		const currentTime = new Date().getTime();
 		connection.query(sqlString, (err, tables) => {
@@ -206,7 +206,7 @@ async function loadDatabaseUser(connection: mysql.PoolConnection): Promise<Boole
 }
 
 function loadShopAnimals(connection: mysql.PoolConnection) {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		const sqlString = 'SELECT * FROM `animals_shop`';
 		connection.query(sqlString, (err, tables) => {
 			if (err) console.log(err);
@@ -219,7 +219,7 @@ function loadShopAnimals(connection: mysql.PoolConnection) {
 }
 
 function loadAnimals(connection: mysql.PoolConnection) {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		const sqlString = 'SELECT * FROM `animals`';
 		connection.query(sqlString, (err, tables) => {
 			if (err) console.log(err);
@@ -232,7 +232,7 @@ function loadAnimals(connection: mysql.PoolConnection) {
 }
 
 function LoadGameChallenges(connection: mysql.PoolConnection) {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		const sqlString = 'SELECT * FROM `challenges`';
 		connection.query(sqlString, (err, tables) => {
 			if (err) console.log(err);
@@ -245,7 +245,7 @@ function LoadGameChallenges(connection: mysql.PoolConnection) {
 }
 
 async function loadAnimalData(connection: mysql.PoolConnection) {
-	return new Promise(async (resolve, reject) => {
+	return new Promise(async (resolve) => {
 		await loadShopAnimals(connection);
 		await loadAnimals(connection);
 		return resolve(true);
@@ -255,7 +255,7 @@ async function loadAnimalData(connection: mysql.PoolConnection) {
 export async function loadDatabaseTables(): Promise<Boolean> {
 	try {
 		if (!mySQLConnection) createDatabaseConnection();
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			mySQLConnection.getConnection(async function (err, connection) {
 				await LoadSessionIds(connection);
 				await loadDatabaseBans(connection);

@@ -12,6 +12,26 @@ function sendUpdateToMaster(id: any, prop: any, value: any) {
 
 export default class VenoxUser {
 	id: number = -1;
+	
+	private _whatsappId: number | null = null;
+	public get whatsappId(): number | null {
+		return this._whatsappId;
+	}
+	public set whatsappId(value: number | null) {
+		if (this._whatsappId == value) return;
+		sendUpdateToMaster(this.id, 'whatsappId', value);
+		this._whatsappId = value;
+	}
+
+	private _telegramId: number | null = null;
+	public get telegramId(): number | null {
+		return this._telegramId;
+	}
+	public set telegramId(value: number | null) {
+		if (this._telegramId == value) return;
+		sendUpdateToMaster(this.id, 'telegramId', value);
+		this._telegramId = value;
+	}
 
 	private _email: string = '';
 	public get email(): string {
@@ -300,6 +320,16 @@ export default class VenoxUser {
 		if (this._daily_date == value) return;
 		sendUpdateToMaster(this.id, 'daily_date', value);
 		this._daily_date = value;
+	}
+
+	private _muted_counter: number = 0;
+	public get muted_counter(): number {
+		return this._muted_counter;
+	}
+	public set muted_counter(value: number) {
+		if (this._muted_counter == value) return;
+		sendUpdateToMaster(this.id, 'muted_counter', value);
+		this._muted_counter = value;
 	}
 
 	public inventory: Inventory;

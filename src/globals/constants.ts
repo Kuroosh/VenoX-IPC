@@ -27,7 +27,7 @@ export const _JoinRequests: { [index: number]: JoinRequest } = {};
 
 export const _verifiedUser: { [index: number]: VenoxUser } = {};
 
-export const _groups: { [index: string]: GroupData } = {};
+export const _groups: { [index: number]: GroupData } = {};
 
 export const _shopAnimals: ShopAnimal[] = [];
 export const _animals: { [index: number]: Animal } = {};

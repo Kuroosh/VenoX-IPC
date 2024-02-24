@@ -78,4 +78,12 @@ export default class BannedUser {
 	public set bannedTill(value: number) {
 		this._bannedTill = value;
 	}
+
+	validOnTelegram: boolean;
+	public get validOnTelegram(): boolean {
+		return this._validOnTelegram;
+	}
+	public set validOnTelegram(value: boolean) {
+		this._validOnTelegram = value;
+	}
 }
